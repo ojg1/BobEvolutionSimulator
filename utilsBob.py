@@ -25,11 +25,38 @@ def ForwardPass(firstLayer : list, outerLayer : list, dx : int, dy :int):
 
     Specifically designed for 2-4-4
 
+    Not finished
+
     '''
 
+    prediction = None
+
+    for iNeuron in range(len(firstLayer)):
+        # The result of the neuron is equal to dx*w0 + dx*w1 + b
+        firstLayer[iNeuron][2] = dx*firstLayer[iNeuron][0][1] + dy*firstLayer[iNeuron][0][1] + firstLayer[1]
+    
+
+    outputValues = []
+
+    for iNeuron in range(len(outerLayer)):
+        wOut = []
+        for jNeuron in range(len(firstLayer)):
+            wOut.append(firstLayer[jNeuron][2] * outerLayer[iNeuron][0][jNeuron])
+        outerLayer[iNeuron][2] = sum(wOut) + outerLayer[iNeuron][1]
+        oV.append(sum(wOut) + outerLayer[iNeuron][1])
+
+    maxValue = max(outputValues)
+    maxIndex = outputValues.index(maxValue)
+
+    if maxIndex == 0:
+        prediction = ()
+    
+
+    return prediction
 
 
-def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDerror:int, loss:int, Alpha : int, xinp : int, yinp: int):
+
+def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDerror:int, loss:int, Alpha : int, dx : int, dy: int):
     
     '''
     func Backpropagate()
@@ -39,9 +66,11 @@ def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDer
     :type TDerror: int, error
     :type loss: int, TDerror^2
     :type Alpha: int, learning rate
+    :type dx: int, offset of X
+    :type dy: int, offset of Y
 
     Specifically designed for 2-4-4
-
+    
     
 
     '''
@@ -60,8 +89,8 @@ def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDer
     for iWeight in range(len(firstLayer)):
         blameDegree = TDerror * outputNeuronWeights[iWeight]
         blameDegree = blameDegree * RectifiedLinearUnit(firstLayer[iWeight][2])[1]
-        blameDegreeX = Alpha * blameDegree * xinp
-        blameDegreeY = Alpha * blameDegree * yinp
+        blameDegreeX = Alpha * blameDegree * dx
+        blameDegreeY = Alpha * blameDegree * dy
         firstLayer[iWeight][0][0] += blameDegreeX
         firstLayer[iWeight][0][1] += blameDegreeY
 
