@@ -25,7 +25,7 @@ def ForwardPass(firstLayer : list, outerLayer : list, dx : int, dy :int):
 
     Specifically designed for 2-4-4
 
-    Not finished
+    Debug
 
     '''
 
@@ -34,7 +34,6 @@ def ForwardPass(firstLayer : list, outerLayer : list, dx : int, dy :int):
     for iNeuron in range(len(firstLayer)):
         # The result of the neuron is equal to dx*w0 + dx*w1 + b
         firstLayer[iNeuron][2] = dx*firstLayer[iNeuron][0][1] + dy*firstLayer[iNeuron][0][1] + firstLayer[1]
-    
 
     outputValues = []
 
@@ -43,14 +42,11 @@ def ForwardPass(firstLayer : list, outerLayer : list, dx : int, dy :int):
         for jNeuron in range(len(firstLayer)):
             wOut.append(firstLayer[jNeuron][2] * outerLayer[iNeuron][0][jNeuron])
         outerLayer[iNeuron][2] = sum(wOut) + outerLayer[iNeuron][1]
-        oV.append(sum(wOut) + outerLayer[iNeuron][1])
+        outputValues.append(sum(wOut) + outerLayer[iNeuron][1])
 
     maxValue = max(outputValues)
     maxIndex = outputValues.index(maxValue)
-
-    if maxIndex == 0:
-        prediction = ()
-    
+    prediction = (maxIndex, maxValue) #will format (0..3, val) into (dir, val)    
 
     return prediction
 
