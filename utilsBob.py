@@ -1,4 +1,5 @@
 import math
+import random
 
 def DistanceMagnitude(Target, Bob, ScreenWidth, ScreenHeight):
     dx = (Target.x-Bob.x)/ScreenWidth
@@ -6,8 +7,6 @@ def DistanceMagnitude(Target, Bob, ScreenWidth, ScreenHeight):
     return (dx, dy)    
 
 def RectifiedLinearUnit(z):
-    
-
     d = 0
     if z > 0:
         d = 1
@@ -44,15 +43,20 @@ def ForwardPass(firstLayer : list, outerLayer : list, dx : int, dy :int):
         outerLayer[iNeuron][2] = sum(wOut) + outerLayer[iNeuron][1]
         outputValues.append(sum(wOut) + outerLayer[iNeuron][1])
 
-    maxValue = max(outputValues)
-    maxIndex = outputValues.index(maxValue)
-    prediction = (maxIndex, maxValue) #will format (0..3, val) into (dir, val)    
+
+    if len(set(outputValues)) == 1:
+        randomPrediction = random.randint(0,3)
+        prediction = [randomPrediction, outputValues[randomPrediction]]
+    else:
+        maxValue = max(outputValues)
+        maxIndex = outputValues.index(maxValue)
+        prediction = [maxIndex, maxValue] #will format (0..3, val) into (dir, val)    
 
     return prediction
 
 
 
-def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDerror:int, loss:int, Alpha : int, dx : int, dy: int):
+def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDerror : int, loss : int, Alpha : float, dx : int, dy : int):
     
     '''
     func Backpropagate()
@@ -61,13 +65,11 @@ def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDer
     :type firstLayer: list{weights:[... : int](2), bias, result}
     :type TDerror: int, error
     :type loss: int, TDerror^2
-    :type Alpha: int, learning rate
+    :type Alpha: float, learning rate
     :type dx: int, offset of X
     :type dy: int, offset of Y
 
     Specifically designed for 2-4-4
-    
-    
 
     '''
 
@@ -96,9 +98,3 @@ def Backpropagate(oNeuronIndex : int, outerLayer : list, firstLayer : list, TDer
 
 
     return [firstLayer, outerLayer]
-
-
-
-    
-
-

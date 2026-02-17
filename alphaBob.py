@@ -1,5 +1,5 @@
 import pygame
-import object
+import instanceBob
 # import numpy
 import math
 import time
@@ -7,7 +7,7 @@ import asyncio
 import random
 
 
-Cock = pygame.time.Clock()
+Clock = pygame.time.Clock()
 
 ScreenWidth = 500
 ScreenHeight = 500
@@ -16,8 +16,8 @@ BackgroundColor = (255,255,255)
 
 Screen = pygame.display.set_mode((ScreenWidth, ScreenHeight))
 
-Bob = object.Bob(Screen, 400,250,20, (0,0,0))
-Target = object.Target(Screen, 50, 225, 50, (255,0,0))
+Bob = instanceBob.Bob(Screen, 400,250,20, (0,0,0))
+Target = instanceBob.Target(Screen, 50, 225, 50, (255,0,0))
 
 RunningLoop = True
 
@@ -240,7 +240,7 @@ while RunningLoop:
 
     # nextStateInputs = [offsetFromTargetX, offsetFromTargetY]
 
-    Cock.tick(60)
+    Clock.tick(60)
 
     pygame.display.update()
             
