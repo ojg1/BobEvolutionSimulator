@@ -24,10 +24,12 @@ dy = None
 def predictionMapping(mI):
     if mI == 0: #Forward
         Bob.x -= Step
-    if mI == 1: #Left
+    elif mI == 1: #Left
         Bob.y += Step
-    if mI == 2: #Backward
+    elif mI == 2: #Backward
         Bob.x += Step
+    elif mI == 3: #Right
+        Bob.y -= Step
 
 #hidden layer: 4 neurons, :type List{weights:List{}, bias:int, result:int}
 firstLayer = []
@@ -56,8 +58,30 @@ while Simulating:
     Bob.draw()
     Target.draw()
 
-    prediction = utilsBob.ForwardPass()
 
+
+
+    DistanceMagnitude = utilsBob.DistanceMagnitude(Target, Bob, 500, 500) 
+    dx, dy = DistanceMagnitude[0], DistanceMagnitude[1] #GetCurrentState() -> (dx, dy)
+    dxO, dyO = dx, dy
+    #Forward pass, prediction [dir:index, val:int]
+    Cprediction = utilsBob.ForwardPass(firstLayer, outerLayer, dx, dy)
+    predictionMapping(Cprediction[0])
+
+    #2nd Forward pass, prediction [dir:index, val:int] max, no step
+    Mprediction = utilsBob.ForwardPass(firstLayer, outerLayer, dx, dy)
+    DistanceMagnitude = utilsBob.DistanceMagnitude(Target, Bob, 500, 500) 
+    dx, dy = DistanceMagnitude[0], DistanceMagnitude[1] #GetCurrentState() -> (dx, dy)
+
+    #         may tweak scale to /500 since window is /500
+    #         1 - sqrt(dx^2+dy^2)/100
+    Reward = (1-utilsBob.RewardMagnitude(dx,dy))
+    TDerror = (Reward + Gamma * Mprediction[1]) - Cprediction[1]
+    
+    #backprop, tweak weights on network
+    Bprop = utilsBob.Backpropagate(oNeuronIndex=Cprediction[0], outerLayer=outerLayer, firstLayer=firstLayer, TDerror=TDerror, loss=(TDerror**2), Alpha=Alpha, dx=dxO, dy=dyO)
+    firstLayer = Bprop[0]
+    outerLayer = Bprop[1]
 
 
     pygame.display.update()

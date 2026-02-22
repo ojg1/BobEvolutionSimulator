@@ -6,6 +6,11 @@ def DistanceMagnitude(Target, Bob, ScreenWidth, ScreenHeight):
     dy = (Target.y-Bob.y)/ScreenHeight
     return (dx, dy)    
 
+def RewardMagnitude(dx, dy):
+    Magnitude = math.sqrt((dx**2)+(dy**2))/100
+    return Magnitude
+
+
 def RectifiedLinearUnit(z):
     d = 0
     if z > 0:
